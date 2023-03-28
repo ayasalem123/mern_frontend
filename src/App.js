@@ -43,7 +43,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/treatments" element={<Treatment />} />
             <Route path="/reviews" element={<Reviews />} />
-            <Route path="/book" element={<Calender />} />
+            //<Route path="/book" element={<Calender />} />
             <Route
               path="/otp"
               element={<Otp recipient_email={recipient_email} OTP={OTP} />}
