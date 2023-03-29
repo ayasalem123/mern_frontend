@@ -1,64 +1,61 @@
-/*import React from 'react';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
-import '@mobiscroll/react/dist/css/mobiscroll.min.css';
-import { Datepicker, Page, setOptions, localeEn } from '@mobiscroll/react';
 import List from './List';
 import { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { getAppointments } from '../redux/slices/UserReducer';
+import moment from 'moment';
 import { PayPalScriptProvider, PayPalButtons } from '@paypal/react-paypal-js';
 import Navbarbook from './Navbarbook';
-setOptions({
-  locale: localeEn,
-  theme: 'ios',
-  themeVariant: 'dark',
-});
+
+import React from 'react';
+import Calendar from 'react-calendar';
+import 'react-calendar/dist/Calendar.css';
 const amount = '30';
 const currency = 'USD';
 const style = { layout: 'vertical' };
-
 function Calender() {
+  const [currentDate, setCurrentDate] = useState([]);
+
   const dispatch = useDispatch();
   const [dates, setDates] = useState([]);
   const { oldappoitments } = useSelector((state) => state.userAuth);
-  console.log(oldappoitments);
+  //console.log(oldappoitments);
   const [selectedDate, setSelectedDate] = useState(null);
   const [paid, setPaid] = useState(false);
   let getdates = async () => {
     let { data } = await axios.get('https://mern-ul6g.onrender.com/book');
     const datearray = data.map((el) => new Date(el.date));
     const newdatearray = datearray.map((el) => {
-      dates.push({
-        start: el,
-        end: new Date(
-          el.getFullYear(),
-          el.getMonth(),
-          el.getDate(),
-          el.getHours(),
-          el.getMinutes() + 45,
-          0
-        ),
-      });
+      dates.push(el);
     });
   };
-
   useEffect(() => {
     getdates();
   }, []);
   const { userAuth } = useSelector((state) => state);
   const loggeduser = userAuth?.loggeduser.signeduser;
   const addappointment = async () => {
-    const sentdate = await selectedDate.toISOString();
+    console.log(selectedDate);
+    const beforedate = await new Date(
+      bookedValue.year,
+      bookedValue.month ,
+      bookedValue.day,
+      bookedValue.hour
+    ).toLocaleString();
+    const datetochange = moment(beforedate, 'DD/MM/YYYY HH:mm:ss').toDate();
+    const sentdate = await datetochange.toISOString();
+    console.log({
+      date: sentdate,
+      paid: paid,
+      userid: loggeduser._id,
+    });
     console.log(loggeduser._id);
-    const addedappoitment = await axios.post(
-      'https://mern-ul6g.onrender.com/book',
-      {
-        date: sentdate,
-        paid: paid,
-        userid: loggeduser._id,
-      }
-    );
+    const addedappoitment = await axios.post('https://mern-ul6g.onrender.com/book', {
+      date: sentdate,
+      paid: paid,
+      userid: loggeduser._id,
+    });
   };
 
   const handleclick2 = (event) => {
@@ -72,39 +69,77 @@ function Calender() {
   const onPageLoadingDatetime = () => {
     setDatetimeInvalid(dates);
   };
-
-  const min = '2023-03-04T00:00';
-  const max = '2023-09-04T00:00';
   const [datetimeLabels, setDatetimeLabels] = React.useState([]);
   const [datetimeInvalid, setDatetimeInvalid] = React.useState([]);
+
+  const [invalidTime, setInvalidTime] = React.useState([]);
+  const [bookedValue, setBookedValue] = useState(null);
+  const handleChange = (date) => {
+    console.log(dates);
+    const unavailable = dates.filter(
+      (el) =>
+        el.getFullYear() == date.getFullYear() &&
+        el.getMonth() == date.getMonth() &&
+        el.getDate() == date.getDate()
+    );
+    setBookedValue({
+      year: date.getFullYear(),
+      month: date.getMonth(),
+      day: date.getDate(),
+    });
+    const newinvalidTime = unavailable.map((el) => el.getHours());
+    setInvalidTime(newinvalidTime);
+    console.log(invalidTime);
+  };
+  const [activeIndex, setActiveIndex] = useState(null);
+
+  const handleTimeClick = (index, time) => {
+    setActiveIndex(index);
+    setBookedValue({ ...bookedValue, hour: time });
+    //  '2022-04-01 12:30:00'
+    setSelectedDate(
+      `${bookedValue.year}-${bookedValue.month}-${bookedValue.day} ${bookedValue.hour}:00:00`
+    );
+  };
 
   if (!loggeduser) {
     // not logged in so redirect to login page with the return url
     return <Navigate to="/login" />;
   }
   return (
-    <Page className="md-calendar-booking">
-      <Navbarbook />
-      <div className="mbsc-form-group">
-        <div className="mbsc-form-group-title">Select date & time</div>
-        <Datepicker
-          display="inline"
-          controls={['calendar', 'timegrid']}
-          min={min}
-          max={max}
-          minTime="08:00"
-          maxTime="19:59"
-          stepMinute={60}
-          width={null}
-          labels={datetimeLabels}
-          invalid={datetimeInvalid}
-          onPageLoading={onPageLoadingDatetime}
-          cssClass="booking-datetime"
-          onChange={(event, inst) => setSelectedDate(inst.getVal())}
-        />
-        <button onClick={handleclick}>book</button>
-        <button onClick={handleclick2}>show old appointments</button>
+    <center>
+      <div style={{ boxShadow: '5px 5px 25px' }}>
+        <Calendar onChange={(date) => handleChange(date)} />
       </div>
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: '1fr 1fr 1fr',
+          gridGap: '10px',
+          width: '300px',
+        }}
+      >
+        {[8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18].map((time, index) => (
+          <a
+            key={time}
+            style={
+              invalidTime.includes(time)
+                ? { cursor: 'not-allowed', color: 'grey', height: '50px' }
+                : {
+                    cursor: 'pointer',
+                    height: '50px',
+                    backgroundColor:
+                      activeIndex === index ? '#006edc' : 'white',
+                  }
+            }
+            onClick={() => handleTimeClick(index, time)}
+          >
+            {`${time <= 12 ? time : time - 12} :00 ${time <= 12 ? 'AM' : 'PM'}`}
+          </a>
+        ))}
+      </div>
+      <button onClick={handleclick}>book</button>
+      <button onClick={handleclick2}>show old appointments</button>
       {oldappoitments?.map((el) => (
         <div>{el.date}</div>
       ))}
@@ -135,7 +170,7 @@ function Calender() {
           }}
         />
       </PayPalScriptProvider>
-    </Page>
+    </center>
   );
 }
-export default Calender;*/
+export default Calender;
