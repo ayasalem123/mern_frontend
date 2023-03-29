@@ -96,10 +96,6 @@ export default function Register(props) {
                 setImg(base64);
               }}
             />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-            />
             <Button
               type="submit"
               fullWidth
