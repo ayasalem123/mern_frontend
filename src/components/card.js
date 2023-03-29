@@ -98,16 +98,13 @@ export default function Cardcomponent({ el }) {
                 >
                   Share
                 </Button>
-                <Button size="small" style={{ backgroundColor: 'white' }}>
-                  Learn More
-                </Button>
               </div>
               {showShare && (
                 <div>
-                  <FacebookShareButton url={window.location.href + `#${el._id}`}>
+                  <FacebookShareButton url={window.location.href }>
                     <FacebookIcon size={40} />
                   </FacebookShareButton>
-                  <EmailShareButton url={window.location.href + `#${el._id}`}>
+                  <EmailShareButton url={window.location.href }>
                     <EmailIcon size={40} />
                   </EmailShareButton>
                 </div>
