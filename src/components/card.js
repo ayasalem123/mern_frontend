@@ -13,8 +13,15 @@ import EditTreatment from './input';
 import { useState } from 'react';
 import { getimage, deletetreatment } from '../redux/slices/AdminReducer';
 import { useDispatch } from 'react-redux';
+import {
+  FacebookIcon,
+  EmailShareButton,
+  EmailIcon,
+  FacebookShareButton,
+} from 'react-share';
 export default function Cardcomponent({ el }) {
   const dispatch = useDispatch();
+  const [showShare, setShowShare] = useState(false);
   // const [imageSrc, setImageSrc] = useState(null);
   // const getit = async () => {
   //   try {
@@ -83,8 +90,28 @@ export default function Cardcomponent({ el }) {
             </div>
           ) : (
             <div>
-              <Button size="small" style={{ backgroundColor: 'white' }}>Share</Button>
-              <Button size="small" style={{ backgroundColor: 'white' }}>Learn More</Button>
+              <div>
+                <Button
+                  size="small"
+                  style={{ backgroundColor: 'white' }}
+                  onClick={() => setShowShare(!showShare)}
+                >
+                  Share
+                </Button>
+                <Button size="small" style={{ backgroundColor: 'white' }}>
+                  Learn More
+                </Button>
+              </div>
+              {showShare && (
+                <div>
+                  <FacebookShareButton url={window.location.href}>
+                    <FacebookIcon size={40} />
+                  </FacebookShareButton>
+                  <EmailShareButton url={window.location.href}>
+                    <EmailIcon size={40} />
+                  </EmailShareButton>
+                </div>
+              )}
             </div>
           )}
         </CardActions>
