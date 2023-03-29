@@ -26,7 +26,7 @@ function Home() {
     gettreatments();
   }, []);
   let getcarousel = async () => {
-    let { data } = await axios.get('http://localhost:5000/carousel');
+    let { data } = await axios.get('https://mern-ul6g.onrender.com');
     setCarouselelement(data);
   };
   const [value, setValue] = useState('');
