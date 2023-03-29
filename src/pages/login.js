@@ -35,11 +35,18 @@ export default function Login({ setRecipient_email, setOTP }) {
   };
   const handlechange = (event) => {
     setRecipient_email(event.target.value);
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    setExistemail(regex.test(event.target.value));
   };
-  const handleforget = () => {
-    const OTP = Math.floor(Math.random() * 900 + 100);
+
+  const handleforget = async() => {
+    if(existEmail)
+    {const OTP = Math.floor(Math.random() * 900 + 100);
     setOTP(OTP);
-    navigate('/otp');
+    navigate('/otp');}
+    else{
+      toast.error("invalid email");
+    }
   };
   return (
     <div>
