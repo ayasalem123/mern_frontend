@@ -54,7 +54,7 @@ export default function Cardcomponent({ el }) {
   const { loggeduser } = useSelector((state) => state.userAuth);
   //{showEditForm ? <EditTreatment el={el} <Model/>/> : null}
   return (
-    <center>
+    <center id={el._id}>
       {showEditForm ? (
         <Model el={el} setShowEditForm={setShowEditForm} />
       ) : null}
@@ -104,10 +104,10 @@ export default function Cardcomponent({ el }) {
               </div>
               {showShare && (
                 <div>
-                  <FacebookShareButton url={window.location.href}>
+                  <FacebookShareButton url={window.location.href + `#${el._id}`}>
                     <FacebookIcon size={40} />
                   </FacebookShareButton>
-                  <EmailShareButton url={window.location.href}>
+                  <EmailShareButton url={window.location.href + `#${el._id}`}>
                     <EmailIcon size={40} />
                   </EmailShareButton>
                 </div>
