@@ -19,6 +19,7 @@ import { Link } from 'react-router-dom';
 import { signin } from '../redux/slices/UserReducer';
 
 export default function Login({ setRecipient_email, setOTP }) {
+    const [existEmail,setExistemail]=React.useState(false)
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const handleSubmit = async (event) => {
