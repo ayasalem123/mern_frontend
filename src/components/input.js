@@ -19,7 +19,7 @@ function EditTreatment({ el, setShowEditForm }) {
       dispatch(changetreatment({ newel }));
     } else {
       dispatch(addtreatment({ newel }));
-      window.location.reload();
+     // window.location.reload();
     }
   };
   return (
